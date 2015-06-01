@@ -139,13 +139,13 @@ double  ReadData()
 
     if(len >= BufferSize/2)
     {
-        printf("bytesReady = %lld \n", len);
+//        printf("bytesReady = %lld \n", len);
          m_buffer.resize(len);
 
         //Read sound samples from input device to buffer
         qint64 ret = m_input->read(m_buffer.data(), len);
 
-        printf("bytesReady = %lld, byte_read = %lld\n", len, ret);
+//        printf("bytesReady = %lld, byte_read = %lld\n", len, ret);
 
         //Assign sound samples to short array
         short* data = (short*)m_buffer.data();
@@ -156,51 +156,51 @@ double  ReadData()
 
         double* result = (double*)malloc(sizeof(double)*len);
         int i;
-       for (i=0; i < word_read; i++)
-        {
-            data[i] = data[i]; // можно менять громкость с микро))
+//       for (i=0; i < word_read; i++)
+//        {
+//            data[i] = data[i]; // можно менять громкость с микро))
 //            if (data[i]/35000.0 < 0.105)
 //            {
 //                data[i] = 0;
 //            }
-       }
-        qint64 len2 = 256;
+//       }
+        qint64 len2 = 1024;
         while (2*len2 <= word_read)
         {
             len2 = 2*len2;
         }
-        printf("len2 = %lld\n", len2);
+//       printf("len2 = %lld\n", len2);
         double* data2 = (double*)malloc(sizeof(double)*len2);
        for (i=0; i < len2; i++)
         {
-            data2[i] = data[i]/35000.0; // cos(TwoPi*i/44.1); а прост) честно я не знаю нафига я это сделал. Мне маленькие числа нравятся больше)))
+            data2[i] = data[i]/35000.0; // а прост) честно я не знаю нафига я это сделал. Мне маленькие числа нравятся больше)))
        }
 
         FFTAnalysis(data2, result, len2, len2);
 
-        FILE *f = fopen("spectrum.txt", "w");
+//        FILE *f = fopen("spectrum.txt", "w");
         double max = 0;
         double maxi = -1;
           for(i=0; i<len2/2; i++)
           {
-            fprintf(f, "%d  %lf  %lf\n", data[i], data2[i], result[i]);
+//            fprintf(f, "%d  %lf  %lf\n", data[i], data2[i], result[i]);
             if(max < result[i])
             {
                 max = result[i];
                 maxi = i;
             }
           }
-          fclose(f);
+ //         fclose(f);
            printf("%lf %lf \n", max, maxi*SampleRate/len2);
 
         free(data2);
         free(result);
 
-        m_audioOutput->stop();
-        m_audioInput->stop();
+//        m_audioOutput->stop();
+//        m_audioInput->stop();
 
-        m_output= m_audioOutput->start();
-        m_input = m_audioInput->start();
+//        m_output= m_audioOutput->start();
+//        m_input = m_audioInput->start();
 
         return max;
     }
